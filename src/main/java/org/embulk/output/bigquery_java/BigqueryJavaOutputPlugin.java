@@ -24,7 +24,6 @@ import org.embulk.output.bigquery_java.config.BigqueryConfigValidator;
 import org.embulk.output.bigquery_java.config.BigqueryTaskBuilder;
 import org.embulk.output.bigquery_java.config.PluginTask;
 import org.embulk.output.bigquery_java.exception.BigqueryException;
-import org.embulk.spi.Exec;
 import org.embulk.spi.OutputPlugin;
 import org.embulk.spi.Schema;
 import org.embulk.spi.TransactionalPageOutput;
@@ -32,7 +31,6 @@ import org.embulk.spi.TransactionalPageOutput;
 import org.embulk.util.config.ConfigMapper;
 import org.embulk.util.config.ConfigMapperFactory;
 import org.embulk.util.config.TaskMapper;
-import org.embulk.util.config.modules.TypeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

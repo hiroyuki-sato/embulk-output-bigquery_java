@@ -30,8 +30,6 @@ import org.embulk.spi.type.StringType;
 import org.embulk.spi.type.TimestampType;
 import org.embulk.spi.type.Type;
 
-import static org.embulk.util.retryhelper.RetryExecutor.retryExecutor;
-
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.common.annotations.VisibleForTesting;
 
