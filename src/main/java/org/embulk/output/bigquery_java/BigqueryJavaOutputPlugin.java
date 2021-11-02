@@ -29,12 +29,22 @@ import org.embulk.spi.OutputPlugin;
 import org.embulk.spi.Schema;
 import org.embulk.spi.TransactionalPageOutput;
 
+import org.embulk.util.config.ConfigMapper;
+import org.embulk.util.config.ConfigMapperFactory;
+import org.embulk.util.config.TaskMapper;
+import org.embulk.util.config.modules.TypeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BigqueryJavaOutputPlugin
         implements OutputPlugin {
-    private final Logger logger = LoggerFactory.getLogger(BigqueryJavaOutputPlugin.class);
+    private static final Logger logger = LoggerFactory.getLogger(BigqueryJavaOutputPlugin.class);
+    private static final ConfigMapperFactory CONFIG_MAPPER_FACTORY = ConfigMapperFactory
+            .builder()
+            .addDefaultModules()
+            .build();
+    private static final ConfigMapper CONFIG_MAPPER = CONFIG_MAPPER_FACTORY.createConfigMapper();
+
     private List<Path> paths;
     private final ConcurrentHashMap<Long, BigqueryFileWriter> writers = BigqueryUtil.getFileWriters();
 
@@ -42,7 +52,7 @@ public class BigqueryJavaOutputPlugin
     public ConfigDiff transaction(ConfigSource config,
                                   Schema schema, int taskCount,
                                   OutputPlugin.Control control) {
-        PluginTask task = config.loadConfig(PluginTask.class);
+        final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         BigqueryConfigValidator.validate(task);
         BigqueryTaskBuilder.build(task);
         BigqueryClient client = new BigqueryClient(task, schema);
@@ -72,7 +82,7 @@ public class BigqueryJavaOutputPlugin
                     break;
             }
 
-            return Exec.newConfigDiff();
+            return CONFIG_MAPPER_FACTORY.newConfigDiff();
         }
 
         logger.debug("embulk-output-bigquery: LOAD IN PARALLEL {}",
@@ -130,7 +140,7 @@ public class BigqueryJavaOutputPlugin
             });
         }
 
-        return Exec.newConfigDiff();
+        return CONFIG_MAPPER_FACTORY.newConfigDiff();
     }
 
     @Override
@@ -148,7 +158,9 @@ public class BigqueryJavaOutputPlugin
 
     @Override
     public TransactionalPageOutput open(TaskSource taskSource, Schema schema, int taskIndex) {
-        PluginTask task = taskSource.loadTask(PluginTask.class);
+        final TaskMapper taskMapper = CONFIG_MAPPER_FACTORY.createTaskMapper();
+        final PluginTask task = taskMapper.map(taskSource, PluginTask.class);
+
         return new BigqueryPageOutput(task, schema);
     }
 
