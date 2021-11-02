@@ -4,10 +4,9 @@ import org.embulk.output.bigquery_java.config.BigqueryColumnOption;
 import org.embulk.output.bigquery_java.config.BigqueryColumnOptionType;
 import org.embulk.output.bigquery_java.config.PluginTask;
 import org.embulk.output.bigquery_java.converter.*;
-import org.embulk.spi.time.Timestamp;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.embulk.spi.time.Timestamp;
 
 public class BigqueryValueConverter {
     // TODO: refactor later

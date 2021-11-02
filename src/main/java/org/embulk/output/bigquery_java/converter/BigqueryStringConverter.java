@@ -8,6 +8,9 @@ import org.embulk.output.bigquery_java.exception.BigqueryTypeCastException;
 import org.embulk.spi.time.Timestamp;
 import org.embulk.util.timestamp.TimestampFormatter;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+
 public class BigqueryStringConverter {
 
     public static void convertAndSet(ObjectNode node, String name, String src, BigqueryColumnOptionType bigqueryColumnOptionType, BigqueryColumnOption columnOption) {
@@ -15,7 +18,7 @@ public class BigqueryStringConverter {
         String pattern;
         String timezone;
         TimestampFormatter parser;
-        Timestamp ts;
+        Instant ts;
         switch (bigqueryColumnOptionType) {
             case BOOLEAN:
                 if (src == null) {
@@ -53,9 +56,14 @@ public class BigqueryStringConverter {
                 if (columnOption.getTimestampFormat().isPresent()) {
                     pattern = columnOption.getTimestampFormat().get();
                     timezone = columnOption.getTimezone();
-                    parser = TimestampParser.of(pattern, timezone);
+                    parser = TimestampFormatter.builder(pattern, true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     ts = parser.parse(src);
-                    timestampFormat = TimestampFormatter.of("%Y-%m-%d %H:%M:%S.%6N %:z", timezone);
+
+                    timestampFormat = TimestampFormatter.builder("%Y-%m-%d %H:%M:%S.%6N %:z", true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     node.put(name, timestampFormat.format(ts));
                 } else {
                     // Users must care of BQ timestamp format by themselves with no timestamp_format
@@ -70,9 +78,13 @@ public class BigqueryStringConverter {
                 if (columnOption.getTimestampFormat().isPresent()) {
                     pattern = columnOption.getTimestampFormat().get();
                     timezone = columnOption.getTimezone();
-                    parser = TimestampParser.of(pattern, timezone);
+                    parser = TimestampFormatter.builder(pattern, true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     ts = parser.parse(src);
-                    timestampFormat = TimestampFormatter.of("%Y-%m-%d %H:%M:%S.%6N", timezone);
+                    timestampFormat = TimestampFormatter.builder("%Y-%m-%d %H:%M:%S.%6N", true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     node.put(name, timestampFormat.format(ts));
                 } else {
                     // Users must care of BQ datetime format by themselves with no timestamp_format
@@ -87,13 +99,17 @@ public class BigqueryStringConverter {
                 if (columnOption.getTimestampFormat().isPresent()) {
                     pattern = columnOption.getTimestampFormat().get();
                     timezone = columnOption.getTimezone();
-                    parser = TimestampParser.of(pattern, timezone);
+                    parser = TimestampFormatter.builder(pattern, true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     try {
                         ts = parser.parse(src);
-                    } catch (TimestampParseException e) {
+                    } catch (DateTimeParseException e) {
                         throw new BigqueryTypeCastException(e.getMessage());
                     }
-                    timestampFormat = TimestampFormatter.of("%Y-%m-%d", timezone);
+                    timestampFormat = TimestampFormatter.builder("%Y-%m-%d", true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     node.put(name, timestampFormat.format(ts));
                 } else {
                     // Users must care of BQ date format by themselves with no timestamp_format
