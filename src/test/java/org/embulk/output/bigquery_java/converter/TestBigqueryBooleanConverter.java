@@ -10,6 +10,8 @@ import org.embulk.output.bigquery_java.config.BigqueryColumnOptionType;
 import org.embulk.output.bigquery_java.config.PluginTask;
 import org.embulk.spi.OutputPlugin;
 import org.embulk.test.TestingEmbulk;
+import org.embulk.util.config.ConfigMapper;
+import org.embulk.util.config.ConfigMapperFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -17,6 +19,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TestBigqueryBooleanConverter {
+    private static final ConfigMapperFactory CONFIG_MAPPER_FACTORY = ConfigMapperFactory
+            .builder()
+            .addDefaultModules()
+            .build();
+    private static final ConfigMapper CONFIG_MAPPER = CONFIG_MAPPER_FACTORY.createConfigMapper();
+
     private ConfigSource config;
     private static final String BASIC_RESOURCE_PATH = "java/org/embulk/output/bigquery_java/";
 
@@ -39,8 +47,8 @@ public class TestBigqueryBooleanConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        // BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryBooleanConverter.convertAndSet(node, "key", true, BigqueryColumnOptionType.STRING);
 
@@ -61,8 +69,8 @@ public class TestBigqueryBooleanConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        // BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryBooleanConverter.convertAndSet(node, "key", true, BigqueryColumnOptionType.STRING);
 
