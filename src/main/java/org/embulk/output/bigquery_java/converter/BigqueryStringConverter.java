@@ -5,7 +5,6 @@ import org.embulk.output.bigquery_java.config.BigqueryColumnOption;
 import org.embulk.output.bigquery_java.config.BigqueryColumnOptionType;
 import org.embulk.output.bigquery_java.exception.BigqueryNotSupportedTypeException;
 import org.embulk.output.bigquery_java.exception.BigqueryTypeCastException;
-import org.embulk.spi.time.Timestamp;
 import org.embulk.util.timestamp.TimestampFormatter;
 
 import java.time.Instant;

@@ -16,6 +16,7 @@ import org.embulk.util.config.ConfigMapperFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.time.Instant;
 
 import static org.junit.Assert.assertEquals;
 
@@ -51,7 +52,7 @@ public class TestBigqueryTimestampConverter {
         BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.INTEGER, columnOption, task);
         assertEquals(1588291200000L, node.get("key").asLong());
@@ -70,7 +71,7 @@ public class TestBigqueryTimestampConverter {
         BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.FLOAT, columnOption, task);
         assertEquals(1588291200000L, node.get("key").asLong());
@@ -82,7 +83,7 @@ public class TestBigqueryTimestampConverter {
         config = loadYamlResource(embulk, "base.yml");
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.TIMESTAMP, null, task);
         assertEquals("2020-05-01 00:00:00.000000 +00:00", node.get("key").asText());
@@ -102,7 +103,7 @@ public class TestBigqueryTimestampConverter {
         BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.STRING, columnOption, task);
         assertEquals("2020-05-01 00:00:00.000000 +00:00", node.get("key").asText());
@@ -122,7 +123,7 @@ public class TestBigqueryTimestampConverter {
         BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.STRING, columnOption, task);
         assertEquals("2020/05/01", node.get("key").asText());
@@ -141,7 +142,7 @@ public class TestBigqueryTimestampConverter {
         BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.DATE, columnOption, task);
         assertEquals("2020-05-01", node.get("key").asText());
@@ -160,7 +161,7 @@ public class TestBigqueryTimestampConverter {
         BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
         final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
         // Fri May 01 2020 00:00:00
-        Timestamp ts = Timestamp.ofEpochMilli(1588291200000L);
+        Instant ts = Instant.ofEpochMilli(1588291200000L);
 
         BigqueryTimestampConverter.convertAndSet(node, "key", ts, BigqueryColumnOptionType.DATETIME, columnOption, task);
         assertEquals("2020-05-01 00:00:00.000000", node.get("key").asText());
