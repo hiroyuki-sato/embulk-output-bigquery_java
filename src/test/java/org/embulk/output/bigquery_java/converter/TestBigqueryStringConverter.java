@@ -10,12 +10,20 @@ import org.embulk.output.bigquery_java.config.BigqueryColumnOptionType;
 import org.embulk.output.bigquery_java.config.PluginTask;
 import org.embulk.spi.OutputPlugin;
 import org.embulk.test.TestingEmbulk;
+import org.embulk.util.config.ConfigMapper;
+import org.embulk.util.config.ConfigMapperFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestBigqueryStringConverter {
+    private static final ConfigMapperFactory CONFIG_MAPPER_FACTORY = ConfigMapperFactory
+            .builder()
+            .addDefaultModules()
+            .build();
+    private static final ConfigMapper CONFIG_MAPPER = CONFIG_MAPPER_FACTORY.createConfigMapper();
+
     private ConfigSource config;
     private static final String BASIC_RESOURCE_PATH = "java/org/embulk/output/bigquery_java/";
 
@@ -38,8 +46,8 @@ public class TestBigqueryStringConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "data", BigqueryColumnOptionType.STRING, columnOption);
 
@@ -56,8 +64,8 @@ public class TestBigqueryStringConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "1", BigqueryColumnOptionType.INTEGER, columnOption);
 
@@ -74,8 +82,8 @@ public class TestBigqueryStringConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "1.0", BigqueryColumnOptionType.FLOAT, columnOption);
 
@@ -93,8 +101,8 @@ public class TestBigqueryStringConverter {
         configSource.set("timestamp_format", "%Y/%m/%d");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "2020/05/01", BigqueryColumnOptionType.DATE, columnOption);
 
@@ -111,8 +119,8 @@ public class TestBigqueryStringConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "2020-05-01", BigqueryColumnOptionType.DATE, columnOption);
         assertEquals("2020-05-01", node.get("key").asText());
@@ -132,8 +140,8 @@ public class TestBigqueryStringConverter {
         configSource.set("timestamp_format", "%Y/%m/%d %H:%M:%S");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "2020/05/01 00:00:00", BigqueryColumnOptionType.DATETIME, columnOption);
 
@@ -150,8 +158,8 @@ public class TestBigqueryStringConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "2020-05-01 00:00:00.000000", BigqueryColumnOptionType.DATETIME, columnOption);
         assertEquals("2020-05-01 00:00:00.000000", node.get("key").asText());
@@ -171,8 +179,8 @@ public class TestBigqueryStringConverter {
         configSource.set("timestamp_format", "%Y/%m/%d %H:%M:%S");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "2020/05/01 00:00:00", BigqueryColumnOptionType.TIMESTAMP, columnOption);
 
@@ -189,8 +197,8 @@ public class TestBigqueryStringConverter {
         configSource.set("name", "key");
         builder.add(configSource);
         config.set("column_options",builder.build());
-        BigqueryColumnOption columnOption = configSource.loadConfig(BigqueryColumnOption.class);
-        PluginTask task = config.loadConfig(PluginTask.class);
+        BigqueryColumnOption columnOption = CONFIG_MAPPER.map(configSource, BigqueryColumnOption.class);
+        // final PluginTask task = CONFIG_MAPPER.map(config, PluginTask.class);
 
         BigqueryStringConverter.convertAndSet(node, "key", "2020-05-01 00:00:00.000000 +09:00", BigqueryColumnOptionType.TIMESTAMP, columnOption);
         assertEquals("2020-05-01 00:00:00.000000 +09:00", node.get("key").asText());

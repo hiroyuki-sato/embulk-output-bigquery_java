@@ -116,6 +116,7 @@ public class JsonColumnVisitor implements BigqueryColumnVisitor {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void timestampColumn(Column column) {
         if (reader.isNull(column)) {
             node.putNull(column.getName());
@@ -129,6 +130,7 @@ public class JsonColumnVisitor implements BigqueryColumnVisitor {
             }else{
                 bigqueryColumnOptionType = BigqueryColumnOptionType.TIMESTAMP;
             }
+            // TODO: Replace reader.getTimestampInstant() after dropping v0.9
             BigqueryValueConverter.convertAndSet(
                     this.node,
                     column.getName(),

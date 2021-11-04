@@ -5,10 +5,10 @@ import org.embulk.output.bigquery_java.config.BigqueryColumnOption;
 import org.embulk.output.bigquery_java.config.BigqueryColumnOptionType;
 import org.embulk.output.bigquery_java.exception.BigqueryNotSupportedTypeException;
 import org.embulk.output.bigquery_java.exception.BigqueryTypeCastException;
-import org.embulk.spi.time.Timestamp;
-import org.embulk.spi.time.TimestampFormatter;
-import org.embulk.spi.time.TimestampParseException;
-import org.embulk.spi.time.TimestampParser;
+import org.embulk.util.timestamp.TimestampFormatter;
+
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 public class BigqueryStringConverter {
 
@@ -16,8 +16,8 @@ public class BigqueryStringConverter {
         TimestampFormatter timestampFormat;
         String pattern;
         String timezone;
-        TimestampParser parser;
-        Timestamp ts;
+        TimestampFormatter parser;
+        Instant ts;
         switch (bigqueryColumnOptionType) {
             case BOOLEAN:
                 if (src == null) {
@@ -55,9 +55,14 @@ public class BigqueryStringConverter {
                 if (columnOption.getTimestampFormat().isPresent()) {
                     pattern = columnOption.getTimestampFormat().get();
                     timezone = columnOption.getTimezone();
-                    parser = TimestampParser.of(pattern, timezone);
+                    parser = TimestampFormatter.builder(pattern, true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     ts = parser.parse(src);
-                    timestampFormat = TimestampFormatter.of("%Y-%m-%d %H:%M:%S.%6N %:z", timezone);
+
+                    timestampFormat = TimestampFormatter.builder("%Y-%m-%d %H:%M:%S.%6N %:z", true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     node.put(name, timestampFormat.format(ts));
                 } else {
                     // Users must care of BQ timestamp format by themselves with no timestamp_format
@@ -72,9 +77,13 @@ public class BigqueryStringConverter {
                 if (columnOption.getTimestampFormat().isPresent()) {
                     pattern = columnOption.getTimestampFormat().get();
                     timezone = columnOption.getTimezone();
-                    parser = TimestampParser.of(pattern, timezone);
+                    parser = TimestampFormatter.builder(pattern, true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     ts = parser.parse(src);
-                    timestampFormat = TimestampFormatter.of("%Y-%m-%d %H:%M:%S.%6N", timezone);
+                    timestampFormat = TimestampFormatter.builder("%Y-%m-%d %H:%M:%S.%6N", true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     node.put(name, timestampFormat.format(ts));
                 } else {
                     // Users must care of BQ datetime format by themselves with no timestamp_format
@@ -89,13 +98,17 @@ public class BigqueryStringConverter {
                 if (columnOption.getTimestampFormat().isPresent()) {
                     pattern = columnOption.getTimestampFormat().get();
                     timezone = columnOption.getTimezone();
-                    parser = TimestampParser.of(pattern, timezone);
+                    parser = TimestampFormatter.builder(pattern, true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     try {
                         ts = parser.parse(src);
-                    } catch (TimestampParseException e) {
+                    } catch (DateTimeParseException e) {
                         throw new BigqueryTypeCastException(e.getMessage());
                     }
-                    timestampFormat = TimestampFormatter.of("%Y-%m-%d", timezone);
+                    timestampFormat = TimestampFormatter.builder("%Y-%m-%d", true)
+                            .setDefaultZoneFromString(timezone)
+                            .build();
                     node.put(name, timestampFormat.format(ts));
                 } else {
                     // Users must care of BQ date format by themselves with no timestamp_format
