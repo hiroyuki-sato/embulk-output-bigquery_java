@@ -153,5 +153,18 @@ public interface PluginTask
     @ConfigDefault("null")
     Optional<BigqueryTimePartitioning> getTimePartitioning();
 
+    @Config("open_timeout_sec")
+    @ConfigDefault("null")
+    Optional<Integer> getOpenTimeoutSec();
+
+    @Config("read_timeout_sec")
+    @ConfigDefault("null")
+    Optional<Integer> getReadTimeoutSec();
+
+    // Deprecated
+    @Config("send_timeout_sec")
+    @ConfigDefault("null")
+    Optional<Integer> getSendTimeoutSec();
+
     void setTimePartitioning(Optional<BigqueryTimePartitioning> bigqueryTimePartitioning);
 }

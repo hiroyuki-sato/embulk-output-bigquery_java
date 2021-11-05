@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import com.google.cloud.bigquery.*;
+import com.google.cloud.http.HttpTransportOptions;
 import org.embulk.output.bigquery_java.config.BigqueryColumnOption;
 import org.embulk.output.bigquery_java.config.BigqueryTimePartitioning;
 import org.embulk.output.bigquery_java.config.PluginTask;
@@ -62,17 +63,32 @@ public class BigqueryClient {
         }
         this.columnOptions = this.task.getColumnOptions().orElse(Collections.emptyList());
         try {
-            this.bigquery = getClientWithJsonKey(this.task.getJsonKeyfile());
+            this.bigquery = getClientWithJsonKey(this.task);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static BigQuery getClientWithJsonKey(String key) throws IOException {
+    private static BigQuery getClientWithJsonKey(PluginTask task) throws IOException {
+        HttpTransportOptions transportOptions = getHttpTransportOptions(task);
         return BigQueryOptions.newBuilder()
-                .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream(key)))
+                .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream(task.getJsonKeyfile())))
+                .setTransportOptions(transportOptions)
                 .build()
                 .getService();
+    }
+
+    private static HttpTransportOptions getHttpTransportOptions(PluginTask task) {
+        HttpTransportOptions transportOptions = BigQueryOptions.getDefaultHttpTransportOptions();
+        HttpTransportOptions.Builder builder;
+        builder = transportOptions.toBuilder();
+        if ( task.getOpenTimeoutSec().isPresent() ) {
+            builder.setConnectTimeout(task.getOpenTimeoutSec().get() * 1000);
+        }
+        if ( task.getReadTimeoutSec().isPresent() ) {
+            builder.setReadTimeout(task.getReadTimeoutSec().get() * 1000);
+        }
+        return builder.build();
     }
 
     public Dataset createDataset(String datasetId){
